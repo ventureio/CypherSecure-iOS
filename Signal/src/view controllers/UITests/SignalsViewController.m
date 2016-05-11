@@ -137,13 +137,15 @@ static NSString *const kShowSignupFlowSegue = @"showSignupFlow";
     [super viewWillAppear:animated];
     [self checkIfEmptyView];
 
-    if (![TSAccountManager isRegistered]) {
-        [self performSegueWithIdentifier:kShowSignupFlowSegue sender:self];
-        return;
-    }
-
     [self updateInboxCountLabel];
     [[self tableView] reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (![TSAccountManager isRegistered]) {
+        [self performSegueWithIdentifier:kShowSignupFlowSegue sender:self];
+    }
 }
 
 - (void)tableViewSetUp {
@@ -215,7 +217,7 @@ static NSString *const kShowSignupFlowSegue = @"showSignupFlow";
     if (self.viewingThreadsIn == kInboxState) {
         archiveAction = [UITableViewRowAction
             rowActionWithStyle:UITableViewRowActionStyleNormal
-                         title:NSLocalizedString(@"ARCHIVE_ACTION", nil)
+                         title:NSLocalizedString(@"ARCHIVE_ACTION", @"Pressing this button moves a thread from the inbox to the archive")
                        handler:^(UITableViewRowAction *_Nonnull action, NSIndexPath *_Nonnull tappedIndexPath) {
                          [self archiveIndexPath:tappedIndexPath];
                          [Environment.preferences setHasArchivedAMessage:YES];
@@ -224,7 +226,7 @@ static NSString *const kShowSignupFlowSegue = @"showSignupFlow";
     } else {
         archiveAction = [UITableViewRowAction
             rowActionWithStyle:UITableViewRowActionStyleNormal
-                         title:@"Unarchive"
+                         title:NSLocalizedString(@"UNARCHIVE_ACTION", @"Pressing this button moves an archived thread from the archive back to the inbox")
                        handler:^(UITableViewRowAction *_Nonnull action, NSIndexPath *_Nonnull tappedIndexPath) {
                          [self archiveIndexPath:tappedIndexPath];
                        }];
